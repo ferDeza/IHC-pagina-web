@@ -76,7 +76,7 @@ const Game = () => {
       <section
         className="py-64 bg-gradient-to-b from-background to-muted relative"
         style={{
-          backgroundImage: "url('/fondo_nombre.jpg')",
+          backgroundImage: `url('${import.meta.env.BASE_URL}fondo_nombre.jpg')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
@@ -105,7 +105,7 @@ const Game = () => {
               </div>
             </div>
             <div className="md:w-1/2 flex justify-center order-1 md:order-2">
-              <img src="/IHC-pagina-web/descripcion.png" alt="Gameplay Virtual Knockout" className="w-full max-w-lg h-auto rounded-2xl border border-blue-200 shadow-lg" />
+              <img src={`${import.meta.env.BASE_URL}descripcion.png`} alt="Gameplay Virtual Knockout" className="w-full max-w-lg h-auto rounded-2xl border border-blue-200 shadow-lg" />
             </div>
           </div>
 
@@ -113,7 +113,8 @@ const Game = () => {
           <div className="flex flex-col md:flex-row items-center gap-8">
             <div className="md:w-1/2 flex justify-center mb-4 md:mb-0">
               <img
-                src="/IHC-pagina-web/objetivo.png"
+                src={`${import.meta.env.BASE_URL}objetivo.png`}
+                alt="Objetivo Virtual Knockout"
                 className="w-full max-w-lg h-auto rounded-2xl border border-blue-200 shadow-lg"
               />
             </div>
@@ -154,7 +155,7 @@ const Game = () => {
               <a href="#juego" className="mt-2 inline-block px-8 py-4 bg-red-600 hover:bg-red-700 text-white text-xl font-bold rounded-full shadow-lg transition-all duration-200">¡Pruébalo ahora!</a>
             </div>
             <div className="md:w-1/2 flex justify-center order-1 md:order-2">
-              <img src="/IHC-pagina-web/ganar.png" alt="Acción Virtual Knockout" className="w-full max-w-lg h-auto rounded-2xl border border-blue-200 shadow-lg" />
+              <img src={`${import.meta.env.BASE_URL}ganar.png`} alt="Acción Virtual Knockout" className="w-full max-w-lg h-auto rounded-2xl border border-blue-200 shadow-lg" />
             </div>
           </div>
         </div>
