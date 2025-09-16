@@ -1,3 +1,5 @@
+// src/App.tsx
+import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,12 +11,16 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+// BASE dinamico: '/' en dev, '/IHC-pagina-web/' en prod (según tu vite.config)
+const base = (import.meta.env.BASE_URL ?? "/") as string;
+const basename = base === "/" ? "/" : base.replace(/\/$/, "");
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
+      <BrowserRouter basename={basename}>
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/juego" element={<Game />} />
