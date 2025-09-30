@@ -52,7 +52,7 @@ const Home = () => {
       {/* Logo clickable */}
       <Link to="/" className="flex items-center gap-4 group">
         <img 
-          src="public/sinfondo.png" 
+          src={`${import.meta.env.BASE_URL}sinfondo.png`}
           alt="NextZone VR Logo" 
           className="h-12 w-auto group-hover:scale-105 transition-transform"
         />
@@ -101,7 +101,7 @@ const Home = () => {
   <div className="relative group perspective-1000">
     <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-600 blur-3xl opacity-40 group-hover:opacity-60 transition-opacity" />
     <img 
-      src="/sinfondo.png" 
+      src={`${import.meta.env.BASE_URL}sinfondo.png`}
       alt="NextZone VR" 
       className="relative h-64 w-auto transform transition-all duration-300 ease-out"
       style={{
@@ -369,7 +369,7 @@ const Home = () => {
             <div className="flex flex-col md:flex-row justify-between items-center gap-8">
               <div className="flex items-center gap-4">
                 <img 
-                  src="public/sinfondo.png" 
+                  src={`${import.meta.env.BASE_URL}sinfondo.png`} 
                   alt="NextZone VR" 
                   className="h-16 w-auto"
                 />
