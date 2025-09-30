@@ -35,8 +35,8 @@ const timelineData: TimelineItem[] = [
   },
   {
     id: 3,
-    title: "Las Pruebas",
-    description: "Probamos la jugabilidad del combate, balanceamos la dificultad del oponente y perfeccionamos las animaciones de knockout",
+    title: "Protipo",
+    description: "Recibimos feedback y modificamos la mecánica para mejorar la experiencia de juego",
     media: [
       { type: 'video', url: 'https://www.youtube.com/watch?v=QMEVDcjxyuA', youtubeId: 'QMEVDcjxyuA' },
       { type: 'video', url: 'https://www.youtube.com/watch?v=FZopgnWH78I', youtubeId: 'FZopgnWH78I' }
@@ -782,25 +782,27 @@ const Game = () => {
           className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-300"
           onClick={closeVideoModal}
         >
-          <div className="relative w-full max-w-6xl aspect-video bg-black rounded-xl overflow-hidden shadow-2xl">
-            <iframe
-              src={`https://www.youtube.com/embed/${selectedVideo}?autoplay=1&rel=0&modestbranding=1`}
-              title="Video de YouTube"
-              className="w-full h-full"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              onClick={(e) => e.stopPropagation()}
-            />
+          <div className="relative w-full max-w-6xl aspect-video">
+            {/* Botón de cerrar fuera del iframe */}
             <button
               onClick={closeVideoModal}
-              className="absolute top-4 right-4 w-12 h-12 bg-black/70 hover:bg-black/90 border border-white/20 text-white rounded-lg flex items-center justify-center text-xl font-bold transition-all duration-300 hover:scale-110 z-10"
+              className="absolute -top-12 -right-4 w-12 h-12 bg-gray-800 hover:bg-gray-700 border-2 border-white text-white rounded-full flex items-center justify-center text-xl font-bold transition-all duration-300 hover:scale-110 z-20 shadow-2xl"
               title="Cerrar video"
             >
               ✕
             </button>
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-lg text-sm z-10">
-              Click fuera del video o presiona ESC para cerrar
+            
+            {/* Iframe del video sin superposiciones */}
+            <div className="bg-black rounded-xl overflow-hidden shadow-2xl">
+              <iframe
+                src={`https://www.youtube.com/embed/${selectedVideo}?autoplay=1&rel=0&modestbranding=1`}
+                title="Video de YouTube"
+                className="w-full h-full aspect-video"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                onClick={(e) => e.stopPropagation()}
+              />
             </div>
           </div>
         </div>
