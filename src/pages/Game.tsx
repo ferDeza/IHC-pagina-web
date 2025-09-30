@@ -10,6 +10,7 @@ interface TimelineItem {
     type: 'image' | 'video';
     url: string;
     thumbnail?: string;
+    youtubeId?: string; // ID del video de YouTube
   }[];
 }
 
@@ -37,12 +38,8 @@ const timelineData: TimelineItem[] = [
     title: "Las Pruebas",
     description: "Probamos la jugabilidad del combate, balanceamos la dificultad del oponente y perfeccionamos las animaciones de knockout",
     media: [
-      { type: 'image', url: 'ganar.png' },
-      { type: 'image', url: 'objetivo.png' },
-      { type: 'video', url: 'placeholder.svg', thumbnail: 'placeholder.svg' },
-      { type: 'image', url: 'descripcion.png' },
-      { type: 'image', url: 'ganar.png' },
-      { type: 'video', url: 'placeholder.svg', thumbnail: 'placeholder.svg' }
+      { type: 'video', url: 'https://www.youtube.com/watch?v=QMEVDcjxyuA', youtubeId: 'QMEVDcjxyuA' },
+      { type: 'video', url: 'https://www.youtube.com/watch?v=FZopgnWH78I', youtubeId: 'FZopgnWH78I' }
     ]
   }
 ];
@@ -50,6 +47,7 @@ const timelineData: TimelineItem[] = [
 const Game = () => {
   const [activeSection, setActiveSection] = useState('hero');
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   const [galleryIndexes, setGalleryIndexes] = useState<{ [key: number]: number }>({});
 
   // Deshabilitar scroll al montar el componente
@@ -68,17 +66,18 @@ const Game = () => {
   // Cerrar modal con tecla ESC
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && selectedImage) {
-        closeImageModal();
+      if (e.key === 'Escape') {
+        if (selectedImage) closeImageModal();
+        if (selectedVideo) closeVideoModal();
       }
     };
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [selectedImage]);
+  }, [selectedImage, selectedVideo]);
 
   // Funciones para navegación de galería
-  const getVisibleMedia = (timelineIndex: number, media: any[]) => {
+  const getVisibleMedia = (timelineIndex: number, media: TimelineItem['media']) => {
     const currentIndex = galleryIndexes[timelineIndex] || 0;
     return media.slice(currentIndex, currentIndex + 2);
   };
@@ -104,6 +103,19 @@ const Game = () => {
 
   const closeImageModal = () => {
     setSelectedImage(null);
+  };
+
+  const openVideoModal = (youtubeId: string) => {
+    setSelectedVideo(youtubeId);
+  };
+
+  const closeVideoModal = () => {
+    setSelectedVideo(null);
+  };
+
+  // Función para obtener el thumbnail automático de YouTube
+  const getYouTubeThumbnail = (youtubeId: string, quality: 'default' | 'mqdefault' | 'hqdefault' | 'sddefault' | 'maxresdefault' = 'hqdefault') => {
+    return `https://img.youtube.com/vi/${youtubeId}/${quality}.jpg`;
   };
 
   return (
@@ -388,7 +400,13 @@ const Game = () => {
                       <div 
                         key={mediaIndex}
                         className="aspect-video bg-gradient-to-br from-[#0A0F1A] to-[#050812] rounded-lg border border-[#3A86FF]/30 overflow-hidden cursor-pointer hover:border-[#E63946] hover:shadow-lg hover:shadow-[#E63946]/30 transition-all duration-300"
-                        onClick={() => media.type === 'image' && openImageModal(`${import.meta.env.BASE_URL}${media.url.replace('/', '')}`)}
+                        onClick={() => {
+                          if (media.type === 'image') {
+                            openImageModal(`${import.meta.env.BASE_URL}${media.url.replace('/', '')}`);
+                          } else if (media.type === 'video' && media.youtubeId) {
+                            openVideoModal(media.youtubeId);
+                          }
+                        }}
                         title={media.type === 'image' ? 'Click para ver imagen completa' : 'Click para reproducir video'}
                       >
                         {media.type === 'image' ? (
@@ -403,9 +421,34 @@ const Game = () => {
                             }}
                           />
                         ) : (
-                          <div className="w-full h-full flex flex-col items-center justify-center text-[#3A86FF] hover:text-[#E63946] transition-colors duration-300">
-                            <span className="text-3xl mb-2 hover:scale-110 transition-transform duration-300">🎬</span>
-                            <span className="text-xs">Click para reproducir</span>
+                          <div 
+                            className="w-full h-full flex flex-col items-center justify-center text-[#3A86FF] hover:text-[#E63946] transition-colors duration-300 relative group"
+                            style={{
+                              backgroundImage: media.youtubeId 
+                                ? `url('${getYouTubeThumbnail(media.youtubeId, 'hqdefault')}')`
+                                : media.thumbnail 
+                                  ? `url('${import.meta.env.BASE_URL}${media.thumbnail}')`
+                                  : 'linear-gradient(45deg, #0A0F1A, #050812)',
+                              backgroundSize: 'cover',
+                              backgroundPosition: 'center'
+                            }}
+                          >
+                            {/* Overlay con botón de play estilo YouTube */}
+                            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 flex items-center justify-center transition-all duration-300">
+                              {/* Botón de play simple estilo YouTube */}
+                              <div className="relative group-hover:scale-110 transition-transform duration-300">
+                                {/* Círculo de fondo semi-transparente */}
+                                <div className="w-20 h-20 bg-black/60 group-hover:bg-red-600/90 rounded-full flex items-center justify-center transition-colors duration-300 shadow-2xl">
+                                  {/* Triángulo de play */}
+                                  <div className="w-0 h-0 border-l-[14px] border-l-white border-t-[10px] border-t-transparent border-b-[10px] border-b-transparent ml-1"></div>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            {/* Indicador de duración (opcional - estilo YouTube) */}
+                            <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-2 py-1 rounded">
+                              Video
+                            </div>
                           </div>
                         )}
                         {/* Fallback para imágenes que no cargan */}
@@ -480,85 +523,211 @@ const Game = () => {
 
 
 
-      {/* Sección Final - Fullscreen */}
+      {/* Sección de Equipo - Fullscreen */}
       {activeSection === 'equipo' && (
-        <section className="section-fullscreen bg-gradient-to-br from-[#050812] to-[#0A0F1A]">
-        <div className="container mx-auto px-4">
-          <h3 className="text-4xl font-bold text-center mb-6 text-white">
-            Tecnología y Equipo
-          </h3>
-          <p className="text-center text-white/80 mb-12 text-lg max-w-2xl mx-auto">
-            Stack tecnológico y metodología de desarrollo utilizada para crear esta experiencia inmersiva
-          </p>
-          
-          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            <Card className="border border-[#3A86FF]/30 bg-[#050812]">
-              <CardHeader>
-                <CardTitle className="text-2xl text-white">
-                  Stack Tecnológico
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-6">
-                <div className="space-y-4">
-                  <div className="p-4 border border-[#3A86FF]/30 rounded-lg">
-                    <div className="font-semibold text-white text-lg">Unity 2022.3 LTS</div>
-                    <div className="text-white/70">Motor de desarrollo para experiencias VR</div>
-                    <div className="text-sm text-[#3A86FF] mt-1 font-medium">Engine Principal</div>
-                  </div>
-                  <div className="p-4 border border-[#E63946]/30 rounded-lg">
-                    <div className="font-semibold text-white text-lg">Meta Quest 2</div>
-                    <div className="text-white/70">Hardware de realidad virtual de última generación</div>
-                    <div className="text-sm text-[#E63946] mt-1 font-medium">Plataforma de Destino</div>
-                  </div>
-                  <div className="p-4 border border-[#FF4D8B]/30 rounded-lg">
-                    <div className="font-semibold text-white text-lg">Blender 4.0</div>
-                    <div className="text-white/70">Herramienta de modelado 3D y animación</div>
-                    <div className="text-sm text-[#FF4D8B] mt-1 font-medium">Asset Creation</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card className="border border-[#E63946]/30 bg-[#050812]">
-              <CardHeader>
-                <CardTitle className="text-2xl text-white">
-                  Metodología de Desarrollo
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-6">
-                <div className="space-y-4">
-                  <div className="p-4 border border-[#E63946]/30 rounded-lg">
-                    <div className="font-bold text-lg text-white mb-3">Desarrollo Ágil</div>
-                    <div className="text-white/80 mb-4">
-                      Implementación iterativa con metodologías centradas en el usuario, aplicando principios de diseño de Interacción Humano-Computadora
-                    </div>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      <span className="px-3 py-1 bg-[#3A86FF]/20 border border-[#3A86FF]/30 text-[#3A86FF] rounded-full text-sm font-medium">
-                        User Testing
-                      </span>
-                      <span className="px-3 py-1 bg-[#FF4D8B]/20 border border-[#FF4D8B]/30 text-[#FF4D8B] rounded-full text-sm font-medium">
-                        Prototipado Rápido
-                      </span>
-                      <span className="px-3 py-1 bg-[#FFD700]/20 border border-[#FFD700]/30 text-[#FFD700] rounded-full text-sm font-medium">
-                        Iteración Continua
-                      </span>
-                    </div>
-                    <div className="text-center pt-3 border-t border-[#3A86FF]/20">
-                      <div className="text-sm text-white/70">
-                        Proyecto Académico - Interacción Humano-Computadora
-                      </div>
-                      <div className="text-sm text-[#FFD700] font-medium mt-1">
-                        Universidad • Semestre 2025-B
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+        <section className="section-fullscreen bg-gradient-to-br from-[#050812] to-[#0A0F1A] flex flex-col">
+          <div className="container mx-auto px-4 py-8 flex-1 flex flex-col justify-center">
+            {/* Header de la sección */}
+            <div className="text-center mb-16">
+              <h3 className="text-5xl font-bold mb-6 text-white">
+                Nuestro Equipo
+              </h3>
+              <div className="w-24 h-1 bg-gradient-to-r from-[#E63946] to-[#FF4D8B] mx-auto mb-6 rounded-full"></div>
+              <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
+                Estudiantes de Ciencia de la Computación apasionados por la innovación tecnológica y el diseño de experiencias inmersivas
+              </p>
+            </div>
 
-        </div>
-      </section>
+            {/* Grid de miembros del equipo */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto mb-16">
+              {/* Miembro 1 */}
+              <div className="relative bg-gradient-to-br from-[#0B0F1A] to-[#050812] rounded-2xl border border-[#3A86FF]/30 p-6 shadow-lg">
+                {/* Avatar con imagen real */}
+                <div className="w-24 h-24 mx-auto mb-4 overflow-hidden rounded-full border-4 border-[#E63946]/50 shadow-lg">
+                  <img 
+                    src={`${import.meta.env.BASE_URL}descripcion1.png`}
+                    alt="Foto del desarrollador principal"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      // Fallback si la imagen no carga
+                      e.currentTarget.style.display = 'none';
+                      const parent = e.currentTarget.parentElement;
+                      if (parent) {
+                        parent.innerHTML = '<div class="w-full h-full bg-gradient-to-br from-[#E63946] to-[#FF4D8B] flex items-center justify-center text-white text-xl font-bold">D</div>';
+                      }
+                    }}
+                  />
+                </div>
+                
+                {/* Información del miembro */}
+                <div className="text-center">
+                  <h4 className="text-xl font-bold text-white mb-2">
+                    Erik Ramos
+                  </h4>
+                  <p className="text-[#3A86FF] font-medium mb-3 text-sm">
+                    Desarrollador Principal
+                  </p>
+                  <p className="text-white/70 text-sm mb-4 leading-relaxed">
+                    Especializado en Unity y desarrollo VR. Lideró la implementación del sistema de combate y mecánicas de juego.
+                  </p>
+                  
+                  {/* Skills */}
+                  <div className="flex flex-wrap gap-1 justify-center">
+                    <span className="px-2 py-1 bg-[#3A86FF]/20 text-[#3A86FF] text-xs rounded-full border border-[#3A86FF]/30">Unity</span>
+                    <span className="px-2 py-1 bg-[#E63946]/20 text-[#E63946] text-xs rounded-full border border-[#E63946]/30">VR Dev</span>
+                    <span className="px-2 py-1 bg-[#FF4D8B]/20 text-[#FF4D8B] text-xs rounded-full border border-[#FF4D8B]/30">C#</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Miembro 2 */}
+              <div className="relative bg-gradient-to-br from-[#0B0F1A] to-[#050812] rounded-2xl border border-[#E63946]/30 p-6 shadow-lg">
+                <div className="w-24 h-24 mx-auto mb-4 overflow-hidden rounded-full border-4 border-[#3A86FF]/50 shadow-lg">
+                  <img 
+                    src={`${import.meta.env.BASE_URL}objetivo1.png`}
+                    alt="Foto del diseñador UX/UI"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      const parent = e.currentTarget.parentElement;
+                      if (parent) {
+                        parent.innerHTML = '<div class="w-full h-full bg-gradient-to-br from-[#3A86FF] to-[#4F94FF] flex items-center justify-center text-white text-xl font-bold">UX</div>';
+                      }
+                    }}
+                  />
+                </div>
+                
+                <div className="text-center">
+                  <h4 className="text-xl font-bold text-white mb-2">
+                    Lizardo Castillo
+                  </h4>
+                  <p className="text-[#E63946] font-medium mb-3 text-sm">
+                    Diseñador UX/UI
+                  </p>
+                  <p className="text-white/70 text-sm mb-4 leading-relaxed">
+                    Experto en IHC y diseño de interfaces. Responsable de la experiencia de usuario y el diseño visual del proyecto.
+                  </p>
+                  
+                  <div className="flex flex-wrap gap-1 justify-center">
+                    <span className="px-2 py-1 bg-[#E63946]/20 text-[#E63946] text-xs rounded-full border border-[#E63946]/30">UX/UI</span>
+                    <span className="px-2 py-1 bg-[#3A86FF]/20 text-[#3A86FF] text-xs rounded-full border border-[#3A86FF]/30">IHC</span>
+                    <span className="px-2 py-1 bg-[#FFD700]/20 text-[#FFD700] text-xs rounded-full border border-[#FFD700]/30">Figma</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Miembro 3 */}
+              <div className="relative bg-gradient-to-br from-[#0B0F1A] to-[#050812] rounded-2xl border border-[#FF4D8B]/30 p-6 shadow-lg">
+                <div className="w-24 h-24 mx-auto mb-4 overflow-hidden rounded-full border-4 border-[#FF4D8B]/50 shadow-lg">
+                  <img 
+                    src={`${import.meta.env.BASE_URL}cinturon.png`}
+                    alt="Foto del artista 3D"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      const parent = e.currentTarget.parentElement;
+                      if (parent) {
+                        parent.innerHTML = '<div class="w-full h-full bg-gradient-to-br from-[#FF4D8B] to-[#FFD700] flex items-center justify-center text-white text-xl font-bold">3D</div>';
+                      }
+                    }}
+                  />
+                </div>
+                
+                <div className="text-center">
+                  <h4 className="text-xl font-bold text-white mb-2">
+                    Karla Cornejo
+                  </h4>
+                  <p className="text-[#FFD700] font-medium mb-3 text-sm">
+                    Artista 3D
+                  </p>
+                  <p className="text-white/70 text-sm mb-4 leading-relaxed">
+                    Modelado 3D y animaciones. Creó todos los assets visuales, personajes y entornos del juego VR.
+                  </p>
+                  
+                  <div className="flex flex-wrap gap-1 justify-center">
+                    <span className="px-2 py-1 bg-[#FF4D8B]/20 text-[#FF4D8B] text-xs rounded-full border border-[#FF4D8B]/30">Blender</span>
+                    <span className="px-2 py-1 bg-[#FFD700]/20 text-[#FFD700] text-xs rounded-full border border-[#FFD700]/30">3D Art</span>
+                    <span className="px-2 py-1 bg-[#3A86FF]/20 text-[#3A86FF] text-xs rounded-full border border-[#3A86FF]/30">Animación</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Miembro 4 */}
+              <div className="relative bg-gradient-to-br from-[#0B0F1A] to-[#050812] rounded-2xl border border-[#FFD700]/30 p-6 shadow-lg">
+                <div className="w-24 h-24 mx-auto mb-4 overflow-hidden rounded-full border-4 border-[#FFD700]/50 shadow-lg">
+                  <img 
+                    src={`${import.meta.env.BASE_URL}ganar.png`}
+                    alt="Foto del ingeniero de software"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      const parent = e.currentTarget.parentElement;
+                      if (parent) {
+                        parent.innerHTML = '<div class="w-full h-full bg-gradient-to-br from-[#FFD700] to-[#E63946] flex items-center justify-center text-white text-xl font-bold">SW</div>';
+                      }
+                    }}
+                  />
+                </div>
+                
+                <div className="text-center">
+                  <h4 className="text-xl font-bold text-white mb-2">
+                    Fernando Deza
+                  </h4>
+                  <p className="text-[#FF4D8B] font-medium mb-3 text-sm">
+                    Ingeniero de Software
+                  </p>
+                  <p className="text-white/70 text-sm mb-4 leading-relaxed">
+                    Optimización y arquitectura del código. Encargado del testing, debugging y rendimiento del juego.
+                  </p>
+                  
+                  <div className="flex flex-wrap gap-1 justify-center">
+                    <span className="px-2 py-1 bg-[#FFD700]/20 text-[#FFD700] text-xs rounded-full border border-[#FFD700]/30">Testing</span>
+                    <span className="px-2 py-1 bg-[#E63946]/20 text-[#E63946] text-xs rounded-full border border-[#E63946]/30">Debug</span>
+                    <span className="px-2 py-1 bg-[#3A86FF]/20 text-[#3A86FF] text-xs rounded-full border border-[#3A86FF]/30">Git</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Información del proyecto académico */}
+            <div className="max-w-4xl mx-auto text-center">
+              <Card className="border border-[#3A86FF]/30 bg-gradient-to-r from-[#0B0F1A]/80 to-[#050812]/80 backdrop-blur-sm">
+                <CardContent className="p-8">
+                  <div className="flex items-center justify-center gap-4 mb-6">
+                    <div className="w-12 h-12 bg-gradient-to-r from-[#E63946] to-[#FF4D8B] rounded-xl flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">🎓</span>
+                    </div>
+                    <h4 className="text-2xl font-bold text-white">Proyecto Académico</h4>
+                  </div>
+                  
+                  <p className="text-white/80 text-lg leading-relaxed mb-6">
+                    Este proyecto fue desarrollado como parte del curso de <span className="text-[#3A86FF] font-semibold">Interacción Humano-Computadora</span>, 
+                    aplicando metodologías de diseño centrado en el usuario y principios de usabilidad en el desarrollo de experiencias inmersivas.
+                  </p>
+                  
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                    <div className="p-4">
+                      <div className="text-2xl font-bold text-[#E63946] mb-1">2025-B</div>
+                      <div className="text-white/70 text-sm">Semestre</div>
+                    </div>
+                    <div className="p-4">
+                      <div className="text-2xl font-bold text-[#3A86FF] mb-1">IHC</div>
+                      <div className="text-white/70 text-sm">Curso</div>
+                    </div>
+                    <div className="p-4">
+                      <div className="text-2xl font-bold text-[#FF4D8B] mb-1">Unity VR</div>
+                      <div className="text-white/70 text-sm">Tecnología</div>
+                    </div>
+                    <div className="p-4">
+                      <div className="text-2xl font-bold text-[#FFD700] mb-1">4</div>
+                      <div className="text-white/70 text-sm">Integrantes</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
       )}
       
       {/* Footer profesional que ocupa todo el final */}
@@ -602,6 +771,36 @@ const Game = () => {
             </button>
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-lg text-sm">
               Click fuera de la imagen o presiona ESC para cerrar
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal para reproducir video de YouTube */}
+      {selectedVideo && (
+        <div 
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-300"
+          onClick={closeVideoModal}
+        >
+          <div className="relative w-full max-w-6xl aspect-video bg-black rounded-xl overflow-hidden shadow-2xl">
+            <iframe
+              src={`https://www.youtube.com/embed/${selectedVideo}?autoplay=1&rel=0&modestbranding=1`}
+              title="Video de YouTube"
+              className="w-full h-full"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              onClick={(e) => e.stopPropagation()}
+            />
+            <button
+              onClick={closeVideoModal}
+              className="absolute top-4 right-4 w-12 h-12 bg-black/70 hover:bg-black/90 border border-white/20 text-white rounded-lg flex items-center justify-center text-xl font-bold transition-all duration-300 hover:scale-110 z-10"
+              title="Cerrar video"
+            >
+              ✕
+            </button>
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-lg text-sm z-10">
+              Click fuera del video o presiona ESC para cerrar
             </div>
           </div>
         </div>
