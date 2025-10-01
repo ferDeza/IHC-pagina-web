@@ -49,6 +49,8 @@ const Game = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   const [galleryIndexes, setGalleryIndexes] = useState<{ [key: number]: number }>({});
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadProgress, setDownloadProgress] = useState(0);
 
   // Deshabilitar scroll al montar el componente
   useEffect(() => {
@@ -118,63 +120,111 @@ const Game = () => {
     return `https://img.youtube.com/vi/${youtubeId}/${quality}.jpg`;
   };
 
+  // Función para simular descarga
+  const handleDownload = async () => {
+    setIsDownloading(true);
+    setDownloadProgress(0);
+    
+    // Simular progreso de descarga
+    for (let i = 0; i <= 100; i += 10) {
+      await new Promise(resolve => setTimeout(resolve, 200));
+      setDownloadProgress(i);
+    }
+    
+    // Redirigir al repositorio de GitHub después de la "descarga"
+    setTimeout(() => {
+      window.open('https://github.com/ferDeza/IHC-pagina-web', '_blank');
+      setIsDownloading(false);
+      setDownloadProgress(0);
+    }, 500);
+  };
+
   return (
   <div className="h-screen bg-background relative overflow-hidden">
+
+
     {/* Navegación lateral persistente */}
     <nav className="fixed left-6 top-1/2 transform -translate-y-1/2 z-50 bg-[#0B0F1A]/90 backdrop-blur-sm rounded-2xl shadow-2xl border border-[#3A86FF]/30 p-4">
       <div className="flex flex-col gap-4">
-        <button
-          onClick={() => setActiveSection('hero')}
-          className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
-            activeSection === 'hero' 
-              ? 'bg-gradient-to-r from-[#E63946] to-[#FF4D8B] text-white shadow-lg shadow-[#E63946]/50' 
-              : 'bg-[#0B0F1A] border border-[#3A86FF]/20 text-[#B0B3C5] hover:bg-[#3A86FF]/20 hover:text-[#3A86FF]'
-          }`}
-          title="Inicio"
-        >
-          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
-          </svg>
-        </button>
-        <button
-          onClick={() => setActiveSection('descripcion')}
-          className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
-            activeSection === 'descripcion' 
-              ? 'bg-gradient-to-r from-[#E63946] to-[#FF4D8B] text-white shadow-lg shadow-[#E63946]/50' 
-              : 'bg-[#0B0F1A] border border-[#3A86FF]/20 text-[#B0B3C5] hover:bg-[#3A86FF]/20 hover:text-[#3A86FF]'
-          }`}
-          title="Descripción"
-        >
-          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd"/>
-          </svg>
-        </button>
-        <button
-          onClick={() => setActiveSection('proceso')}
-          className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
-            activeSection === 'proceso' 
-              ? 'bg-gradient-to-r from-[#E63946] to-[#FF4D8B] text-white shadow-lg shadow-[#E63946]/50' 
-              : 'bg-[#0B0F1A] border border-[#3A86FF]/20 text-[#B0B3C5] hover:bg-[#3A86FF]/20 hover:text-[#3A86FF]'
-          }`}
-          title="Proceso"
-        >
-          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 0l-2 2a1 1 0 001.414 1.414L8 10.414l1.293 1.293a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
-          </svg>
-        </button>
-        <button
-          onClick={() => setActiveSection('equipo')}
-          className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
-            activeSection === 'equipo' 
-              ? 'bg-gradient-to-r from-[#E63946] to-[#FF4D8B] text-white shadow-lg shadow-[#E63946]/50' 
-              : 'bg-[#0B0F1A] border border-[#3A86FF]/20 text-[#B0B3C5] hover:bg-[#3A86FF]/20 hover:text-[#3A86FF]'
-          }`}
-          title="Equipo"
-        >
-          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/>
-          </svg>
-        </button>
+        {/* Botón Home */}
+        <div className="relative group">
+          <button
+            onClick={() => setActiveSection('hero')}
+            className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
+              activeSection === 'hero' 
+                ? 'bg-gradient-to-r from-[#E63946] to-[#FF4D8B] text-white shadow-lg shadow-[#E63946]/50' 
+                : 'bg-[#0B0F1A] border border-[#3A86FF]/20 text-[#B0B3C5] hover:bg-[#3A86FF]/20 hover:text-[#3A86FF]'
+            }`}
+          >
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+            </svg>
+          </button>
+          {/* Tooltip expandible */}
+          <div className="absolute left-full ml-4 top-1/2 transform -translate-y-1/2 bg-[#0B0F1A]/95 backdrop-blur-sm text-white px-3 py-2 rounded-lg border border-[#3A86FF]/30 shadow-xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap">
+            Home
+          </div>
+        </div>
+
+        {/* Botón Jugabilidad */}
+        <div className="relative group">
+          <button
+            onClick={() => setActiveSection('descripcion')}
+            className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
+              activeSection === 'descripcion' 
+                ? 'bg-gradient-to-r from-[#E63946] to-[#FF4D8B] text-white shadow-lg shadow-[#E63946]/50' 
+                : 'bg-[#0B0F1A] border border-[#3A86FF]/20 text-[#B0B3C5] hover:bg-[#3A86FF]/20 hover:text-[#3A86FF]'
+            }`}
+          >
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd"/>
+            </svg>
+          </button>
+          {/* Tooltip expandible */}
+          <div className="absolute left-full ml-4 top-1/2 transform -translate-y-1/2 bg-[#0B0F1A]/95 backdrop-blur-sm text-white px-3 py-2 rounded-lg border border-[#3A86FF]/30 shadow-xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap">
+            Jugabilidad
+          </div>
+        </div>
+
+        {/* Botón Progreso */}
+        <div className="relative group">
+          <button
+            onClick={() => setActiveSection('proceso')}
+            className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
+              activeSection === 'proceso' 
+                ? 'bg-gradient-to-r from-[#E63946] to-[#FF4D8B] text-white shadow-lg shadow-[#E63946]/50' 
+                : 'bg-[#0B0F1A] border border-[#3A86FF]/20 text-[#B0B3C5] hover:bg-[#3A86FF]/20 hover:text-[#3A86FF]'
+            }`}
+          >
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 0l-2 2a1 1 0 001.414 1.414L8 10.414l1.293 1.293a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
+            </svg>
+          </button>
+          {/* Tooltip expandible */}
+          <div className="absolute left-full ml-4 top-1/2 transform -translate-y-1/2 bg-[#0B0F1A]/95 backdrop-blur-sm text-white px-3 py-2 rounded-lg border border-[#3A86FF]/30 shadow-xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap">
+            Progreso
+          </div>
+        </div>
+
+        {/* Botón Equipo */}
+        <div className="relative group">
+          <button
+            onClick={() => setActiveSection('equipo')}
+            className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
+              activeSection === 'equipo' 
+                ? 'bg-gradient-to-r from-[#E63946] to-[#FF4D8B] text-white shadow-lg shadow-[#E63946]/50' 
+                : 'bg-[#0B0F1A] border border-[#3A86FF]/20 text-[#B0B3C5] hover:bg-[#3A86FF]/20 hover:text-[#3A86FF]'
+            }`}
+          >
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/>
+            </svg>
+          </button>
+          {/* Tooltip expandible */}
+          <div className="absolute left-full ml-4 top-1/2 transform -translate-y-1/2 bg-[#0B0F1A]/95 backdrop-blur-sm text-white px-3 py-2 rounded-lg border border-[#3A86FF]/30 shadow-xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap">
+            Equipo
+          </div>
+        </div>
       </div>
     </nav>
       {/* Header profesional con colores de empresa */}
@@ -202,6 +252,47 @@ const Game = () => {
               <span className="text-[#B0B3C5] hover:text-[#3A86FF] transition-colors font-medium">
                 Proyecto
               </span>
+              
+              {/* Botón de Descarga integrado */}
+              <button 
+                onClick={handleDownload}
+                disabled={isDownloading}
+                className={`relative px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300 border-2 ${
+                  isDownloading 
+                    ? 'bg-gray-700 border-gray-600 text-gray-300 cursor-not-allowed' 
+                    : 'bg-transparent border-[#3A86FF] text-[#3A86FF] hover:bg-[#3A86FF] hover:text-white hover:shadow-lg hover:shadow-[#3A86FF]/30'
+                }`}
+                title={isDownloading ? 'Descargando...' : 'Descargar el juego'}
+              >
+                <span className="flex items-center gap-2">
+                  {isDownloading ? (
+                    <>
+                      <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                        <path className="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                      </svg>
+                      {downloadProgress}%
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd"/>
+                      </svg>
+                      Descarga
+                    </>
+                  )}
+                </span>
+                
+                {/* Barra de progreso */}
+                {isDownloading && (
+                  <div className="absolute bottom-0 left-0 h-1 bg-white/30 rounded-b-lg overflow-hidden w-full">
+                    <div 
+                      className="h-full bg-white transition-all duration-300 ease-out"
+                      style={{ width: `${downloadProgress}%` }}
+                    />
+                  </div>
+                )}
+              </button>
             </div>
           </nav>
         </div>
@@ -222,12 +313,17 @@ const Game = () => {
             }}
           ></div>
         <div className="container mx-auto px-4 text-center relative z-10 pt-20">
-          <h2 className="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight">
+          <h2 className="text-5xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#E63946] via-[#FF4D8B] to-[#FFD700] mb-8 tracking-tight drop-shadow-2xl">
             VIRTUAL KNOCKOUT
           </h2>
-          <p className="text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto leading-relaxed">
-            Experiencia inmersiva de boxeo en realidad virtual que combina tecnología avanzada con entrenamiento deportivo
-          </p>
+          <div className="mb-12 max-w-4xl mx-auto">
+            <p className="text-2xl md:text-4xl font-bold leading-relaxed text-center mb-4 text-white drop-shadow-2xl" style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(230,57,70,0.5)' }}>
+              <span className="text-[#FFD700]">Experiencia inmersiva</span> de boxeo en realidad virtual
+            </p>
+            <p className="text-xl md:text-2xl text-center leading-relaxed font-semibold text-white drop-shadow-2xl" style={{ textShadow: '2px 2px 6px rgba(0,0,0,0.9), 0 0 15px rgba(58,134,255,0.4)' }}>
+              Que combina <span className="text-[#3A86FF] font-bold">tecnología avanzada</span> con <span className="text-[#FF4D8B] font-bold">entrenamiento deportivo</span>
+            </p>
+          </div>
           <div className="flex justify-center">
             <button 
               onClick={() => setActiveSection('descripcion')}
@@ -254,16 +350,48 @@ const Game = () => {
       {activeSection === 'descripcion' && (
         <section className="section-fullscreen bg-gradient-to-br from-[#050812] to-[#0A0F1A]">
           <div className="container mx-auto px-4 py-8">
-            <h2 className="text-4xl font-bold text-center mb-8 text-white">
-              Virtual Knockout
-            </h2>
+            {/* Título impactante mejorado */}
+            <div className="text-center mb-16">
+              <h2 className="text-5xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#E63946] via-[#FF4D8B] to-[#FFD700] mb-4 tracking-tight leading-tight">
+                EL RING TE ESPERA
+              </h2>
+              <div className="flex items-center justify-center gap-4 mb-6">
+                <div className="w-16 h-1 bg-gradient-to-r from-transparent to-[#E63946] rounded-full"></div>
+                <span className="text-2xl md:text-4xl font-bold text-white animate-pulse">
+                  ⚡ ¿TIENES LO NECESARIO? ⚡
+                </span>
+                <div className="w-16 h-1 bg-gradient-to-l from-transparent to-[#E63946] rounded-full"></div>
+              </div>
+              <p className="text-xl md:text-2xl text-white/90 font-medium max-w-4xl mx-auto">
+                Entra al ring más desafiante del mundo virtual. Solo los valientes se atreven a enfrentar el combate definitivo.
+              </p>
+            </div>
             <div className="flex flex-col gap-16">
           {/* Fila 1: ¿En qué consiste? (texto izquierda, imagen derecha) */}
           <div className="flex flex-col md:flex-row items-center gap-8">
             <div className="md:w-1/2 order-2 md:order-1 ">
                 <div className="bg-gradient-to-r from-[#0B0F1A] to-[#0B0F1A]/80 rounded-xl p-6 shadow-lg mb-2 border border-[#3A86FF]/30 backdrop-blur-sm">
-                <h4 className="text-2xl font-bold text-[#E63946] mb-2">¿En qué consiste?</h4>
-                <p className="text-base text-white">Virtual Knockout es un juego de boxeo en realidad virtual donde te enfrentas cara a cara contra un peleador virtual hasta conseguir el knockout definitivo. ¡Solo uno puede quedar en pie!</p>
+                <h4 className="text-2xl font-bold text-[#E63946] mb-6">¿En qué consiste?</h4>
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <span className="text-2xl">🥊</span>
+                    <p className="text-base text-white leading-relaxed">
+                      <strong className="text-[#FFD700]">Enfréntate a oponentes desafiantes</strong> en un combate VR visceral.
+                    </p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="text-2xl">🔥</span>
+                    <p className="text-base text-white leading-relaxed">
+                      <strong className="text-[#FF4D8B]">Suda de verdad</strong> con un sistema de juego físicamente activo.
+                    </p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="text-2xl">🏆</span>
+                    <p className="text-base text-white leading-relaxed">
+                      <strong className="text-[#3A86FF]">Conquista el cinturón</strong> y conviértete en el campeón definitivo.
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
             <div className="md:w-1/2 flex justify-center order-1 md:order-2">
@@ -314,7 +442,6 @@ const Game = () => {
                   <span className="text-white/80 text-sm mt-1">Defiende tu récord y mantente como el último en pie del ring.</span>
                 </div>
               </div>
-              <button className="mt-2 inline-block px-8 py-4 bg-gradient-to-r from-[#E63946] to-[#FF4D8B] hover:from-[#E63946]/90 hover:to-[#FF4D8B]/90 text-white text-xl font-bold rounded-lg shadow-lg shadow-[#E63946]/50 transition-all duration-300">¡Pruébalo ahora!</button>
             </div>
             <div className="md:w-1/2 flex justify-center order-1 md:order-2">
               <img src={`${import.meta.env.BASE_URL}cinturon.png`} alt="Acción Virtual Knockout" className="w-full max-w-lg h-auto rounded-2xl border border-blue-200 shadow-lg" />
