@@ -1,45 +1,48 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Clock, Wrench, Gamepad2 } from 'lucide-react';
+import Header from '@/components/Header';
 
 const Proyecto = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#050812] via-[#0A0F1A] to-[#0D1420] text-white">
       
-      {/* Header profesional con colores de empresa */}
-      <header className="fixed top-0 w-full bg-[#0B0F1A]/95 backdrop-blur-sm shadow-lg z-30 border-b border-[#3A86FF]/30">
-        <div className="container mx-auto px-4 py-4">
-          <nav className="flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-[#E63946] to-[#FF4D8B] rounded-lg flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-lg">VK</span>
-              </div>
-              <h1 className="text-xl font-bold text-white">
-                VIRTUAL KNOCKOUT
-              </h1>
-            </Link>
-            <div className="flex items-center gap-6">
-              <Link 
-                to="/" 
-                className="text-[#B0B3C5] hover:text-[#3A86FF] transition-colors font-medium"
-              >
-                Inicio
-              </Link>
-              <Link
-                to="/juego"
-                className="text-[#B0B3C5] hover:text-[#3A86FF] transition-colors font-medium"
-              >
-                Juego
-              </Link>
-              <span className="px-4 py-2 bg-rose-600 text-white rounded-lg font-medium shadow-lg">
-                Proyecto
-              </span>
-            </div>
-          </nav>
-        </div>
-      </header>
+      {/* Header con navegación ajustada específicamente para Proyecto */}
+      <div className="header-proyecto-fix">
+        <Header />
+      </div>
+      
+      {/* CSS específico para ajustar solo la navegación en Proyecto */}
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          .header-proyecto-fix .flex-1 {
+            padding-left: 200px;
+          }
+        `
+      }} />
 
-      <div className="flex items-center justify-center min-h-screen pt-20">
+      {/* Sidebar vacío para consistencia visual */}
+      <aside className="fixed left-0 top-0 z-40 h-full w-20 bg-gray-900/90 backdrop-blur-sm shadow-xl shadow-black/50 flex flex-col items-center justify-center border-r border-rose-600/20">
+        {/* Decoración visual sin botones */}
+        <div className="flex flex-col space-y-6">
+          {/* Elemento decorativo 1 */}
+          <div className="w-12 h-12 rounded-xl bg-gray-800/50 border border-rose-600/10 flex items-center justify-center">
+            <div className="w-2 h-2 bg-rose-600/30 rounded-full"></div>
+          </div>
+          
+          {/* Elemento decorativo 2 */}
+          <div className="w-12 h-12 rounded-xl bg-gray-800/50 border border-rose-600/10 flex items-center justify-center">
+            <div className="w-2 h-2 bg-rose-600/30 rounded-full"></div>
+          </div>
+          
+          {/* Elemento decorativo 3 */}
+          <div className="w-12 h-12 rounded-xl bg-gray-800/50 border border-rose-600/10 flex items-center justify-center">
+            <div className="w-2 h-2 bg-rose-600/30 rounded-full"></div>
+          </div>
+        </div>
+      </aside>
+
+      <div className="pl-20 flex items-center justify-center min-h-screen pt-20">
       {/* Background Effects */}
       <div className="fixed inset-0 opacity-20 pointer-events-none">
         <div className="absolute inset-0 bg-gradient-to-br from-[#E63946]/10 via-[#FF4D8B]/10 to-[#3A86FF]/10" />

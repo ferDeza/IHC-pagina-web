@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Gamepad2, GraduationCap, Building2, Play, ArrowRight, Sparkles, Home as HomeIcon } from 'lucide-react'; 
 import { Link } from 'react-router-dom';
+import Header from '@/components/Header';
 
 const Home = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -167,51 +168,8 @@ const Home = () => {
       
       <div className="pl-20"> 
 
-        {/* Header - AHORA UNIFICADO A LA PALETA ROSE/AMBER/VIOLET */}
-       <header className="fixed top-0 left-0 right-0 z-50 border-b border-[#3A86FF]/30 bg-[#0B0F1A]/95 backdrop-blur-sm shadow-lg">
-  <div className="container mx-auto px-6 py-4">
-    <nav className="flex items-center justify-between">
-      
-      {/* Logo clickable con tu imagen */}
-      <Link to="/" className="flex items-center gap-4 group">
-        <img 
-          src={`${import.meta.env.BASE_URL}nextZone.png`} 
-          alt="Logo" 
-          className="h-12 w-auto group-hover:scale-105 transition-transform drop-shadow-lg"
-        />
-        <div>
-          <h1 className="text-xl font-bold bg-gradient-to-r from-[#E63946] to-[#FF4D8B] bg-clip-text text-transparent">
-            NEXTZONE
-          </h1>
-          <p className="text-xs text-gray-500">VR Studio</p>
-        </div>
-      </Link>
-
-      {/* Navegación con azul de acento (#3A86FF) */}
-      <div className="flex items-center space-x-8">
-        <a 
-          href="#inicio" 
-          className="px-4 py-2 bg-rose-600 text-white rounded-lg font-medium shadow-lg transition"
-          onClick={() => setActiveSection('inicio')}
-        >
-          Inicio
-        </a>
-        <Link 
-          to="/juego" 
-          className="text-[#B0B3C5] hover:text-[#3A86FF] transition-colors font-medium"
-        >
-          Juego
-        </Link>
-        <Link 
-          to="/proyecto" 
-          className="text-[#B0B3C5] hover:text-[#3A86FF] transition-colors font-medium"
-        >
-          Proyecto
-        </Link>
-      </div>
-    </nav>
-  </div>
-</header>
+        {/* Header unificado */}
+        <Header />
 
 {/* SCROLL 1: HERO - AJUSTADO CON MENOS AMARILLO */}
 <section id="inicio" className="min-h-screen flex items-center justify-center relative pt-12">

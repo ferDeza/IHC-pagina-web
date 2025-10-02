@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Gamepad2 } from 'lucide-react';
+import Header from '@/components/Header';
 
 interface TimelineItem {
   id: number;
@@ -276,79 +277,60 @@ const Game = () => {
       <Sidebar />
       
       <div className="pl-20">
-      {/* Header profesional con colores de empresa */}
-      <header className="fixed top-0 w-full bg-[#0B0F1A]/95 backdrop-blur-sm shadow-lg z-30 border-b border-[#3A86FF]/30">
-        <div className="container mx-auto px-4 py-4">
-          <nav className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-[#E63946] to-[#FF4D8B] rounded-lg flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-lg">VK</span>
-              </div>
-              <h1 className="text-xl font-bold text-white">
-                VIRTUAL KNOCKOUT
-              </h1>
+      {/* Header con botón de descarga integrado y logo VK */}
+      <Header 
+        customLogo={
+          <Link to="/" className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-r from-[#E63946] to-[#FF4D8B] rounded-lg flex items-center justify-center shadow-lg">
+              <span className="text-white font-bold text-lg">VK</span>
             </div>
-            <div className="flex items-center gap-6">
-              <Link 
-                to="/" 
-                className="text-[#B0B3C5] hover:text-[#3A86FF] transition-colors font-medium"
-              >
-                Inicio
-              </Link>
-              <span className="px-4 py-2 bg-rose-600 text-white rounded-lg font-medium shadow-lg">
-                Juego
-              </span>
-              <Link 
-                to="/proyecto"
-                className="text-[#B0B3C5] hover:text-[#3A86FF] transition-colors font-medium"
-              >
-                Proyecto
-              </Link>
-              
-              {/* Botón de Descarga integrado */}
-              <button 
-                onClick={handleDownload}
-                disabled={isDownloading}
-                className={`relative px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300 border-2 ${
-                  isDownloading 
-                    ? 'bg-gray-700 border-gray-600 text-gray-300 cursor-not-allowed' 
-                    : 'bg-transparent border-[#3A86FF] text-[#3A86FF] hover:bg-[#3A86FF] hover:text-white hover:shadow-lg hover:shadow-[#3A86FF]/30'
-                }`}
-                title={isDownloading ? 'Descargando...' : 'Descargar el juego'}
-              >
-                <span className="flex items-center gap-2">
-                  {isDownloading ? (
-                    <>
-                      <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                        <path className="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
-                      </svg>
-                      {downloadProgress}%
-                    </>
-                  ) : (
-                    <>
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd"/>
-                      </svg>
-                      Descarga
-                    </>
-                  )}
-                </span>
-                
-                {/* Barra de progreso */}
-                {isDownloading && (
-                  <div className="absolute bottom-0 left-0 h-1 bg-white/30 rounded-b-lg overflow-hidden w-full">
-                    <div 
-                      className="h-full bg-white transition-all duration-300 ease-out"
-                      style={{ width: `${downloadProgress}%` }}
-                    />
-                  </div>
-                )}
-              </button>
+            <h1 className="text-xl font-bold text-white">
+              VIRTUAL KNOCKOUT
+            </h1>
+          </Link>
+        }
+        rightElement={
+        <button 
+          onClick={handleDownload}
+          disabled={isDownloading}
+          className={`relative px-4 py-3 text-sm font-medium rounded-lg transition-all duration-300 border-2 shadow-lg ${
+            isDownloading 
+              ? 'bg-gray-700 border-gray-600 text-gray-300 cursor-not-allowed' 
+              : 'bg-transparent border-[#3A86FF] text-[#3A86FF] hover:bg-[#3A86FF] hover:text-white hover:shadow-xl hover:shadow-[#3A86FF]/30 backdrop-blur-sm'
+          }`}
+          title={isDownloading ? 'Descargando...' : 'Descargar el juego'}
+        >
+          <span className="flex items-center gap-2">
+            {isDownloading ? (
+              <>
+                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                  <path className="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                </svg>
+                {downloadProgress}%
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd"/>
+                </svg>
+                Descarga
+              </>
+            )}
+          </span>
+          
+          {/* Barra de progreso */}
+          {isDownloading && (
+            <div className="absolute bottom-0 left-0 h-1 bg-white/30 rounded-b-lg overflow-hidden w-full">
+              <div 
+                className="h-full bg-white transition-all duration-300 ease-out"
+                style={{ width: `${downloadProgress}%` }}
+              />
             </div>
-          </nav>
-        </div>
-      </header>
+          )}
+        </button>
+        }
+      />
 
 
       {/* Hero Section - Fullscreen */}
@@ -395,7 +377,16 @@ const Game = () => {
 
       {/* Game Description Section - Fullscreen */}
       {activeSection === 'descripcion' && (
-        <section className="section-fullscreen bg-gradient-to-br from-[#050812] to-[#0A0F1A]">
+        <section className="section-fullscreen relative" 
+          style={{
+            background: `
+              radial-gradient(circle at 20% 30%, rgba(230, 57, 70, 0.2) 0%, transparent 50%),
+              radial-gradient(circle at 80% 70%, rgba(58, 134, 255, 0.15) 0%, transparent 50%),
+              radial-gradient(circle at 50% 20%, rgba(255, 215, 0, 0.12) 0%, transparent 40%),
+              radial-gradient(circle at 30% 80%, rgba(255, 77, 139, 0.18) 0%, transparent 45%),
+              linear-gradient(135deg, #050812 0%, #0A0F1A 100%)
+            `
+          }}>
           <div className="container mx-auto px-4 py-8">
             {/* Título impactante mejorado */}
             <div className="text-center mb-16">
@@ -523,7 +514,16 @@ const Game = () => {
 
       {/* Timeline Section - Fullscreen */}
       {activeSection === 'proceso' && (
-        <section className="section-fullscreen bg-gradient-to-br from-[#050812] via-[#0A0F1A] to-[#0D1420]">
+        <section className="section-fullscreen relative" 
+          style={{
+            background: `
+              radial-gradient(circle at 25% 25%, rgba(58, 134, 255, 0.25) 0%, transparent 50%),
+              radial-gradient(circle at 75% 75%, rgba(255, 215, 0, 0.15) 0%, transparent 45%),
+              radial-gradient(circle at 80% 20%, rgba(230, 57, 70, 0.18) 0%, transparent 40%),
+              radial-gradient(circle at 20% 80%, rgba(255, 77, 139, 0.12) 0%, transparent 50%),
+              linear-gradient(135deg, #050812 0%, #0A0F1A 50%, #0D1420 100%)
+            `
+          }}>
           <div className="container mx-auto px-4 py-8">
             <h3 className="text-4xl font-bold text-center mb-4 text-white">
               Proceso de Desarrollo
@@ -723,7 +723,16 @@ const Game = () => {
 
       {/* Sección de Equipo - Fullscreen */}
       {activeSection === 'equipo' && (
-        <section className="section-fullscreen bg-gradient-to-br from-[#050812] to-[#0A0F1A] flex flex-col">
+        <section className="section-fullscreen flex flex-col relative" 
+          style={{
+            background: `
+              radial-gradient(circle at 15% 15%, rgba(255, 215, 0, 0.22) 0%, transparent 45%),
+              radial-gradient(circle at 85% 20%, rgba(230, 57, 70, 0.16) 0%, transparent 50%),
+              radial-gradient(circle at 70% 85%, rgba(255, 77, 139, 0.18) 0%, transparent 40%),
+              radial-gradient(circle at 25% 75%, rgba(58, 134, 255, 0.14) 0%, transparent 45%),
+              linear-gradient(135deg, #050812 0%, #0A0F1A 100%)
+            `
+          }}>
           <div className="container mx-auto px-4 py-8 flex-1 flex flex-col justify-center">
             {/* Header de la sección */}
             <div className="text-center mb-16">
