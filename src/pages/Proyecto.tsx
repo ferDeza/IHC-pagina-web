@@ -4,7 +4,42 @@ import { ArrowLeft, Clock, Wrench, Gamepad2 } from 'lucide-react';
 
 const Proyecto = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#050812] via-[#0A0F1A] to-[#0D1420] text-white flex items-center justify-center">
+    <div className="min-h-screen bg-gradient-to-br from-[#050812] via-[#0A0F1A] to-[#0D1420] text-white">
+      
+      {/* Header profesional con colores de empresa */}
+      <header className="fixed top-0 w-full bg-[#0B0F1A]/95 backdrop-blur-sm shadow-lg z-30 border-b border-[#3A86FF]/30">
+        <div className="container mx-auto px-4 py-4">
+          <nav className="flex items-center justify-between">
+            <Link to="/" className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-r from-[#E63946] to-[#FF4D8B] rounded-lg flex items-center justify-center shadow-lg">
+                <span className="text-white font-bold text-lg">VK</span>
+              </div>
+              <h1 className="text-xl font-bold text-white">
+                VIRTUAL KNOCKOUT
+              </h1>
+            </Link>
+            <div className="flex items-center gap-6">
+              <Link 
+                to="/" 
+                className="text-[#B0B3C5] hover:text-[#3A86FF] transition-colors font-medium"
+              >
+                Inicio
+              </Link>
+              <Link
+                to="/juego"
+                className="text-[#B0B3C5] hover:text-[#3A86FF] transition-colors font-medium"
+              >
+                Juego
+              </Link>
+              <span className="px-4 py-2 bg-rose-600 text-white rounded-lg font-medium shadow-lg">
+                Proyecto
+              </span>
+            </div>
+          </nav>
+        </div>
+      </header>
+
+      <div className="flex items-center justify-center min-h-screen pt-20">
       {/* Background Effects */}
       <div className="fixed inset-0 opacity-20 pointer-events-none">
         <div className="absolute inset-0 bg-gradient-to-br from-[#E63946]/10 via-[#FF4D8B]/10 to-[#3A86FF]/10" />
@@ -67,15 +102,7 @@ const Proyecto = () => {
             <p className="text-sm text-white/80">Progreso en tiempo real</p>
           </div>
         </div>
-
-        {/* Back Button */}
-        <Link 
-          to="/"
-          className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-[#E63946] to-[#FF4D8B] hover:from-[#E63946]/90 hover:to-[#FF4D8B]/90 text-white rounded-lg font-semibold transition-all duration-300 shadow-xl hover:shadow-2xl shadow-[#E63946]/50 group"
-        >
-          <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-300" />
-          Volver al Inicio
-        </Link>
+        
 
         {/* Footer Note */}
         <p className="text-xs text-white/50 mt-8">
@@ -83,11 +110,12 @@ const Proyecto = () => {
         </p>
       </div>
 
-      {/* Floating Elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-32 h-32 border border-[#3A86FF]/10 rounded-lg rotate-12 animate-pulse" />
-        <div className="absolute top-1/3 right-20 w-24 h-24 border border-[#E63946]/10 rounded-lg -rotate-12" style={{ animation: 'pulse 3s ease-in-out infinite' }} />
-        <div className="absolute bottom-40 left-1/4 w-40 h-40 border border-[#FF4D8B]/10 rounded-lg rotate-45" style={{ animation: 'pulse 4s ease-in-out infinite' }} />
+        {/* Floating Elements */}
+        <div className="fixed inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 left-10 w-32 h-32 border border-[#3A86FF]/10 rounded-lg rotate-12 animate-pulse" />
+          <div className="absolute top-1/3 right-20 w-24 h-24 border border-[#E63946]/10 rounded-lg -rotate-12" style={{ animation: 'pulse 3s ease-in-out infinite' }} />
+          <div className="absolute bottom-40 left-1/4 w-40 h-40 border border-[#FF4D8B]/10 rounded-lg rotate-45" style={{ animation: 'pulse 4s ease-in-out infinite' }} />
+        </div>
       </div>
     </div>
   );

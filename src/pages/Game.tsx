@@ -30,8 +30,13 @@ const timelineData: TimelineItem[] = [
     title: "Sketching",
     description: "Diseñamos la mecánica de combate: sistema de golpes, defensa, vida del oponente y animación de knockout",
     media: [
-      { type: 'image', url: 'sketch3.png' },
-      { type: 'image', url: 'sketch1.png' },
+      { type: 'image', url: 'flujo-1.jpeg' },
+      { type: 'image', url: 'flujo-2.jpeg' },
+      { type: 'image', url: 'flujo-3.jpeg' },
+      { type: 'image', url: 'flujo-4.jpeg' },
+      { type: 'image', url: 'flujo-5.jpeg' },
+      { type: 'image', url: 'flujo-6.1.jpeg' },
+      { type: 'image', url: 'flujo-6.jpeg' },
     ]
   },
   {
@@ -52,6 +57,9 @@ const Game = () => {
   const [galleryIndexes, setGalleryIndexes] = useState<{ [key: number]: number }>({});
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadProgress, setDownloadProgress] = useState(0);
+  // Estados para navegación en modal
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [currentImageSet, setCurrentImageSet] = useState<string[]>([]);
 
   // Deshabilitar scroll al montar el componente
   useEffect(() => {
@@ -66,18 +74,26 @@ const Game = () => {
     };
   }, []);
 
-  // Cerrar modal con tecla ESC
+  // Cerrar modal con tecla ESC y navegar con flechas
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         if (selectedImage) closeImageModal();
         if (selectedVideo) closeVideoModal();
+      } else if (selectedImage && currentImageSet.length > 1) {
+        if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          navigateModalImage('next');
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          navigateModalImage('prev');
+        }
       }
     };
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [selectedImage, selectedVideo]);
+  }, [selectedImage, selectedVideo, currentImageSet, currentImageIndex]);
 
   // Funciones para navegación de galería
   const getVisibleMedia = (timelineIndex: number, media: TimelineItem['media']) => {
@@ -100,12 +116,42 @@ const Game = () => {
     });
   };
 
-  const openImageModal = (imageUrl: string) => {
+  const openImageModal = (imageUrl: string, timelineIndex?: number) => {
+    if (timelineIndex !== undefined) {
+      // Obtener todas las imágenes de este timeline
+      const allImages = timelineData[timelineIndex].media
+        .filter(media => media.type === 'image')
+        .map(media => `${import.meta.env.BASE_URL}${media.url.replace('/', '')}`);
+      
+      setCurrentImageSet(allImages);
+      const currentIndex = allImages.indexOf(imageUrl);
+      setCurrentImageIndex(currentIndex >= 0 ? currentIndex : 0);
+    } else {
+      setCurrentImageSet([imageUrl]);
+      setCurrentImageIndex(0);
+    }
     setSelectedImage(imageUrl);
   };
 
   const closeImageModal = () => {
     setSelectedImage(null);
+    setCurrentImageSet([]);
+    setCurrentImageIndex(0);
+  };
+
+  // Navegación dentro del modal de imagen
+  const navigateModalImage = (direction: 'prev' | 'next') => {
+    if (currentImageSet.length <= 1) return;
+    
+    let newIndex;
+    if (direction === 'next') {
+      newIndex = currentImageIndex >= currentImageSet.length - 1 ? 0 : currentImageIndex + 1;
+    } else {
+      newIndex = currentImageIndex <= 0 ? currentImageSet.length - 1 : currentImageIndex - 1;
+    }
+    
+    setCurrentImageIndex(newIndex);
+    setSelectedImage(currentImageSet[newIndex]);
   };
 
   const openVideoModal = (youtubeId: string) => {
@@ -149,7 +195,7 @@ const Game = () => {
             onClick={() => setActiveSection('hero')}
             className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
               activeSection === 'hero' 
-                ? 'bg-gradient-to-r from-[#E63946] to-[#FF4D8B] text-white shadow-lg shadow-[#E63946]/50' 
+                ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/50' 
                 : 'bg-[#0B0F1A] border border-[#3A86FF]/20 text-[#B0B3C5] hover:bg-[#3A86FF]/20 hover:text-[#3A86FF]'
             }`}
           >
@@ -169,7 +215,7 @@ const Game = () => {
             onClick={() => setActiveSection('descripcion')}
             className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
               activeSection === 'descripcion' 
-                ? 'bg-gradient-to-r from-[#E63946] to-[#FF4D8B] text-white shadow-lg shadow-[#E63946]/50' 
+                ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/50' 
                 : 'bg-[#0B0F1A] border border-[#3A86FF]/20 text-[#B0B3C5] hover:bg-[#3A86FF]/20 hover:text-[#3A86FF]'
             }`}
           >
@@ -187,7 +233,7 @@ const Game = () => {
             onClick={() => setActiveSection('proceso')}
             className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
               activeSection === 'proceso' 
-                ? 'bg-gradient-to-r from-[#E63946] to-[#FF4D8B] text-white shadow-lg shadow-[#E63946]/50' 
+                ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/50' 
                 : 'bg-[#0B0F1A] border border-[#3A86FF]/20 text-[#B0B3C5] hover:bg-[#3A86FF]/20 hover:text-[#3A86FF]'
             }`}
           >
@@ -207,7 +253,7 @@ const Game = () => {
             onClick={() => setActiveSection('equipo')}
             className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
               activeSection === 'equipo' 
-                ? 'bg-gradient-to-r from-[#E63946] to-[#FF4D8B] text-white shadow-lg shadow-[#E63946]/50' 
+                ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/50' 
                 : 'bg-[#0B0F1A] border border-[#3A86FF]/20 text-[#B0B3C5] hover:bg-[#3A86FF]/20 hover:text-[#3A86FF]'
             }`}
           >
@@ -249,7 +295,7 @@ const Game = () => {
               >
                 Inicio
               </Link>
-              <span className="px-4 py-2 bg-gradient-to-r from-[#E63946] to-[#FF4D8B] text-white rounded-lg font-medium shadow-lg">
+              <span className="px-4 py-2 bg-rose-600 text-white rounded-lg font-medium shadow-lg">
                 Juego
               </span>
               <Link 
@@ -552,7 +598,7 @@ const Game = () => {
                         className="aspect-video bg-gradient-to-br from-[#0A0F1A] to-[#050812] rounded-lg border border-[#3A86FF]/30 overflow-hidden cursor-pointer hover:border-[#E63946] hover:shadow-lg hover:shadow-[#E63946]/30 transition-all duration-300"
                         onClick={() => {
                           if (media.type === 'image') {
-                            openImageModal(`${import.meta.env.BASE_URL}${media.url.replace('/', '')}`);
+                            openImageModal(`${import.meta.env.BASE_URL}${media.url.replace('/', '')}`, index);
                           } else if (media.type === 'video' && media.youtubeId) {
                             openVideoModal(media.youtubeId);
                           }
@@ -882,26 +928,9 @@ const Game = () => {
         </section>
       )}
       
-      {/* Footer profesional que ocupa todo el final */}
-      <footer className="w-full bg-gradient-to-b from-[#060A12] to-[#030507] border-t border-[#E63946]/30 py-16">
-        <div className="container mx-auto px-4 text-center">
-          <div className="flex items-center justify-center gap-4 mb-8">
-            <div className="w-12 h-12 bg-gradient-to-r from-[#E63946] to-[#FF4D8B] rounded-xl flex items-center justify-center shadow-xl shadow-[#E63946]/30">
-              <span className="text-white font-bold text-lg">VK</span>
-            </div>
-            <span className="text-white font-bold text-2xl tracking-wide">VIRTUAL KNOCKOUT</span>
-          </div>
-          <div className="w-24 h-1 bg-gradient-to-r from-[#E63946] to-[#FF4D8B] mx-auto mb-6 rounded-full"></div>
-          <p className="text-white/90 text-xl mb-4 font-medium">
-            © 2025 - Proyecto Académico de Interacción Humano-Computadora
-          </p>
-          <p className="text-white/70 text-lg">
-            Desarrollado aplicando principios de UX/UI y diseño centrado en el usuario
-          </p>
-        </div>
-      </footer>
+      </div>
 
-      {/* Modal para ver imagen expandida */}
+      {/* Modal para ver imagen expandida con navegación */}
       {selectedImage && (
         <div 
           className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-300"
@@ -914,6 +943,8 @@ const Game = () => {
               className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             />
+            
+            {/* Botón cerrar */}
             <button
               onClick={closeImageModal}
               className="absolute top-4 right-4 w-12 h-12 bg-black/70 hover:bg-black/90 border border-white/20 text-white rounded-lg flex items-center justify-center text-xl font-bold transition-all duration-300 hover:scale-110"
@@ -921,8 +952,48 @@ const Game = () => {
             >
               ✕
             </button>
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-lg text-sm">
-              Click fuera de la imagen o presiona ESC para cerrar
+            
+            {/* Botones de navegación - Solo se muestran si hay más de una imagen */}
+            {currentImageSet.length > 1 && (
+              <>
+                {/* Botón anterior */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigateModalImage('prev');
+                  }}
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-black/70 hover:bg-black/90 border border-white/20 text-white rounded-lg flex items-center justify-center text-2xl font-bold transition-all duration-300 hover:scale-110"
+                  title="Imagen anterior (← tecla)"
+                >
+                  ←
+                </button>
+                
+                {/* Botón siguiente */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigateModalImage('next');
+                  }}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-black/70 hover:bg-black/90 border border-white/20 text-white rounded-lg flex items-center justify-center text-2xl font-bold transition-all duration-300 hover:scale-110"
+                  title="Imagen siguiente (→ tecla)"
+                >
+                  →
+                </button>
+                
+                {/* Indicador de posición */}
+                <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-lg text-sm border border-white/20">
+                  {currentImageIndex + 1} de {currentImageSet.length}
+                </div>
+              </>
+            )}
+            
+            {/* Instrucciones */}
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-lg text-sm text-center border border-white/20">
+              {currentImageSet.length > 1 ? (
+                <>Usa las flechas ← → o los botones para navegar • ESC para cerrar</>
+              ) : (
+                <>Click fuera de la imagen o presiona ESC para cerrar</>
+              )}
             </div>
           </div>
         </div>
@@ -959,8 +1030,6 @@ const Game = () => {
           </div>
         </div>
       )}
-      
-      </div>
     </div>
   );
 };

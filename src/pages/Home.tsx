@@ -21,10 +21,14 @@ const Home = () => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
+          console.log('Sección detectada:', entry.target.id); // Debug temporal
           setActiveSection(entry.target.id);
         }
       });
-    }, { threshold: 0.5, rootMargin: '-50% 0px -50% 0px' });
+    }, { 
+      threshold: 0.3, 
+      rootMargin: '-20% 0px -20% 0px' 
+    });
 
     const sections = ['inicio', 'servicios', 'proyecto']; // 'nosotros' eliminado del array
     sections.forEach(id => {
@@ -52,27 +56,7 @@ const Home = () => {
   // CORREGIDO: Usaremos la clase directamente en el JSX
   const BG_COLOR = 'slate-950';
 
-  // Función para generar la clase del enlace activo (SIDEBAR)
-  const getNavLinkClass = (sectionId, iconComponent) => {
-    const isActive = activeSection === sectionId;
-    const baseClass = "p-3 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 transition-colors group relative";
-    
-    // CORREGIDO: Usamos rose-600 directamente
-    const activeClass = isActive 
-      ? ` bg-rose-600 text-white shadow-lg shadow-rose-600/50` 
-      : '';
 
-    return (
-      <a 
-        href={`#${sectionId}`} 
-        className={`${baseClass} ${activeClass}`} 
-        title={sectionId.charAt(0).toUpperCase() + sectionId.slice(1)}
-        onClick={() => setActiveSection(sectionId)}
-      >
-        {iconComponent}
-      </a>
-    );
-  };
 
   // Función para generar la clase del enlace del Header
   const getHeaderLinkClass = (sectionId: string) => {
@@ -84,20 +68,64 @@ const Home = () => {
 
   const Sidebar = () => (
     // CORREGIDO: Usamos rose-600
-    <aside className={`fixed left-0 top-0 z-40 h-full w-20 bg-gray-900/90 backdrop-blur-sm shadow-xl shadow-black/50 flex flex-col items-center justify-start py-8 border-r border-rose-600/20`}>
-      <Link to="/" className="mb-12">
-        {/* CORREGIDO: Usamos rose-600 y amber-400 */}
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-600 to-amber-400 flex items-center justify-center shadow-lg shadow-rose-600/30">
-          <Gamepad2 className="w-6 h-6 text-white" />
-        </div>
-      </Link>
-      
+    <aside className={`fixed left-0 top-0 z-40 h-full w-20 bg-gray-900/90 backdrop-blur-sm shadow-xl shadow-black/50 flex flex-col items-center justify-center border-r border-rose-600/20`}>      
       <nav className="flex flex-col space-y-6">
-        {getNavLinkClass('inicio', <HomeIcon className="w-6 h-6 group-hover:scale-110 transition-transform" />)}
-        {getNavLinkClass('servicios', <Sparkles className="w-6 h-6 group-hover:scale-110 transition-transform" />)}
-        {getNavLinkClass('proyecto', <Gamepad2 className="w-6 h-6 group-hover:scale-110 transition-transform" />)}
-        {/* CORREGIDO: Añadido el enlace a Nosotros (si existe la sección) */}
-        {/* {getNavLinkClass('nosotros', <Building2 className="w-6 h-6 group-hover:scale-110 transition-transform" />)} */}
+        {/* Botón Inicio */}
+        <div className="relative group">
+          <a
+            href="#inicio"
+            onClick={() => setActiveSection('inicio')}
+            className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
+              activeSection === 'inicio' 
+                ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/50' 
+                : 'bg-gray-800 border border-rose-600/20 text-gray-400 hover:bg-rose-600/20 hover:text-rose-400'
+            }`}
+          >
+            <HomeIcon className="w-5 h-5" />
+          </a>
+          {/* Tooltip expandible */}
+          <div className="absolute left-full ml-4 top-1/2 transform -translate-y-1/2 bg-gray-900/95 backdrop-blur-sm text-white px-3 py-2 rounded-lg border border-rose-600/30 shadow-xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap">
+            Inicio
+          </div>
+        </div>
+
+        {/* Botón Servicios */}
+        <div className="relative group">
+          <a
+            href="#servicios"
+            onClick={() => setActiveSection('servicios')}
+            className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
+              activeSection === 'servicios' 
+                ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/50' 
+                : 'bg-gray-800 border border-rose-600/20 text-gray-400 hover:bg-rose-600/20 hover:text-rose-400'
+            }`}
+          >
+            <Sparkles className="w-5 h-5" />
+          </a>
+          {/* Tooltip expandible */}
+          <div className="absolute left-full ml-4 top-1/2 transform -translate-y-1/2 bg-gray-900/95 backdrop-blur-sm text-white px-3 py-2 rounded-lg border border-rose-600/30 shadow-xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap">
+            Servicios
+          </div>
+        </div>
+
+        {/* Botón Juegos */}
+        <div className="relative group">
+          <a
+            href="#proyecto"
+            onClick={() => setActiveSection('proyecto')}
+            className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
+              activeSection === 'proyecto' 
+                ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/50' 
+                : 'bg-gray-800 border border-rose-600/20 text-gray-400 hover:bg-rose-600/20 hover:text-rose-400'
+            }`}
+          >
+            <Gamepad2 className="w-5 h-5" />
+          </a>
+          {/* Tooltip expandible */}
+          <div className="absolute left-full ml-4 top-1/2 transform -translate-y-1/2 bg-gray-900/95 backdrop-blur-sm text-white px-3 py-2 rounded-lg border border-rose-600/30 shadow-xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap">
+            Juegos
+          </div>
+        </div>
       </nav>
     </aside>
   );
@@ -163,41 +191,23 @@ const Home = () => {
       <div className="flex items-center space-x-8">
         <a 
           href="#inicio" 
-          className={getHeaderLinkClass('inicio')}
+          className="px-4 py-2 bg-rose-600 text-white rounded-lg font-medium shadow-lg transition"
           onClick={() => setActiveSection('inicio')}
         >
           Inicio
         </a>
         <Link 
           to="/juego" 
-          className={activeSection === 'juego'
-            ? "px-4 py-2 bg-gradient-to-r from-[#E63946] to-[#FF4D8B] text-white rounded-lg font-medium shadow-lg transition"
-            : "text-[#B0B3C5] hover:text-[#3A86FF] transition-colors font-medium"}
-          onClick={() => setActiveSection('juego')}
+          className="text-[#B0B3C5] hover:text-[#3A86FF] transition-colors font-medium"
         >
           Juego
         </Link>
-        <a 
-          href="#servicios" 
-          className={getHeaderLinkClass('servicios')}
-          onClick={() => setActiveSection('servicios')}
-        >
-          Servicios
-        </a>
-        <a 
-          href="#proyecto" 
-          className={getHeaderLinkClass('proyecto')}
-          onClick={() => setActiveSection('proyecto')}
+        <Link 
+          to="/proyecto" 
+          className="text-[#B0B3C5] hover:text-[#3A86FF] transition-colors font-medium"
         >
           Proyecto
-        </a>
-        <a 
-          href="#nosotros"
-          className={getHeaderLinkClass('nosotros')}
-          onClick={() => setActiveSection('nosotros')}
-        >
-          Nosotros
-        </a>
+        </Link>
       </div>
     </nav>
   </div>
@@ -242,13 +252,7 @@ const Home = () => {
 
     {/* Botones con degradados vibrantes */}
     <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-      <Button 
-        size="lg" 
-        className="text-lg px-8 py-4 bg-gradient-to-r from-rose-600 to-orange-500 hover:from-rose-600/90 hover:to-orange-500/90 border-0 shadow-xl shadow-rose-600/30 group"
-      >
-        <Play className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
-        Ver Demo VR
-      </Button>
+      
       <Button
         asChild
         size="lg"
