@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Gamepad2 } from 'lucide-react';
 
 interface TimelineItem {
   id: number;
@@ -139,13 +140,9 @@ const Game = () => {
     }, 500);
   };
 
-  return (
-  <div className="h-screen bg-background relative overflow-hidden">
-
-
-    {/* Navegación lateral persistente */}
-    <nav className="fixed left-6 top-1/2 transform -translate-y-1/2 z-50 bg-[#0B0F1A]/90 backdrop-blur-sm rounded-2xl shadow-2xl border border-[#3A86FF]/30 p-4">
-      <div className="flex flex-col gap-4">
+  const Sidebar = () => (
+    <aside className={`fixed left-0 top-0 z-40 h-full w-20 bg-gray-900/90 backdrop-blur-sm shadow-xl shadow-black/50 flex flex-col items-center justify-center border-r border-[#3A86FF]/20`}>
+      <nav className="flex flex-col space-y-6">
         {/* Botón Home */}
         <div className="relative group">
           <button
@@ -176,9 +173,7 @@ const Game = () => {
                 : 'bg-[#0B0F1A] border border-[#3A86FF]/20 text-[#B0B3C5] hover:bg-[#3A86FF]/20 hover:text-[#3A86FF]'
             }`}
           >
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd"/>
-            </svg>
+            <Gamepad2 className="w-5 h-5" />
           </button>
           {/* Tooltip expandible */}
           <div className="absolute left-full ml-4 top-1/2 transform -translate-y-1/2 bg-[#0B0F1A]/95 backdrop-blur-sm text-white px-3 py-2 rounded-lg border border-[#3A86FF]/30 shadow-xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap">
@@ -225,20 +220,28 @@ const Game = () => {
             Equipo
           </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </aside>
+  );
+
+  return (
+    <div className="min-h-screen bg-slate-950 text-white overflow-x-hidden">
+      {/* Sidebar */}
+      <Sidebar />
+      
+      <div className="pl-20">
       {/* Header profesional con colores de empresa */}
       <header className="fixed top-0 w-full bg-[#0B0F1A]/95 backdrop-blur-sm shadow-lg z-30 border-b border-[#3A86FF]/30">
         <div className="container mx-auto px-4 py-4">
           <nav className="flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-3">
+            <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-gradient-to-r from-[#E63946] to-[#FF4D8B] rounded-lg flex items-center justify-center shadow-lg">
                 <span className="text-white font-bold text-lg">VK</span>
               </div>
               <h1 className="text-xl font-bold text-white">
                 VIRTUAL KNOCKOUT
               </h1>
-            </Link>
+            </div>
             <div className="flex items-center gap-6">
               <Link 
                 to="/" 
@@ -249,9 +252,12 @@ const Game = () => {
               <span className="px-4 py-2 bg-gradient-to-r from-[#E63946] to-[#FF4D8B] text-white rounded-lg font-medium shadow-lg">
                 Juego
               </span>
-              <span className="text-[#B0B3C5] hover:text-[#3A86FF] transition-colors font-medium">
+              <Link 
+                to="/proyecto"
+                className="text-[#B0B3C5] hover:text-[#3A86FF] transition-colors font-medium"
+              >
                 Proyecto
-              </span>
+              </Link>
               
               {/* Botón de Descarga integrado */}
               <button 
@@ -302,14 +308,17 @@ const Game = () => {
       {/* Hero Section - Fullscreen */}
       {activeSection === 'hero' && (
         <section className="section-fullscreen flex items-center justify-center relative overflow-hidden">
-          {/* GIF de fondo en bucle */}
+          {/* GIF de fondo optimizado */}
           <div 
-            className="absolute inset-0 w-full h-full"
+            className="absolute inset-0 w-full h-full bg-gradient-to-br from-[#050812] to-[#0A0F1A]"
             style={{
               backgroundImage: `url('${import.meta.env.BASE_URL}BOXER.gif')`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',
+              willChange: 'auto',
+              backfaceVisibility: 'hidden',
+              transform: 'translateZ(0)',
             }}
           ></div>
         <div className="container mx-auto px-4 text-center relative z-10 pt-20">
@@ -323,14 +332,6 @@ const Game = () => {
             <p className="text-xl md:text-2xl text-center leading-relaxed font-semibold text-white drop-shadow-2xl" style={{ textShadow: '2px 2px 6px rgba(0,0,0,0.9), 0 0 15px rgba(58,134,255,0.4)' }}>
               Que combina <span className="text-[#3A86FF] font-bold">tecnología avanzada</span> con <span className="text-[#FF4D8B] font-bold">entrenamiento deportivo</span>
             </p>
-          </div>
-          <div className="flex justify-center">
-            <button 
-              onClick={() => setActiveSection('descripcion')}
-              className="px-10 py-4 bg-gradient-to-r from-[#E63946] to-[#FF4D8B] hover:from-[#E63946]/90 hover:to-[#FF4D8B]/90 text-white rounded-lg font-semibold transition-all duration-300 shadow-xl hover:shadow-2xl shadow-[#E63946]/50 text-lg"
-            >
-              Explorar el Juego VR
-            </button>
           </div>
         </div>
         
@@ -369,8 +370,8 @@ const Game = () => {
             <div className="flex flex-col gap-16">
           {/* Fila 1: ¿En qué consiste? (texto izquierda, imagen derecha) */}
           <div className="flex flex-col md:flex-row items-center gap-8">
-            <div className="md:w-1/2 order-2 md:order-1 ">
-                <div className="bg-gradient-to-r from-[#0B0F1A] to-[#0B0F1A]/80 rounded-xl p-6 shadow-lg mb-2 border border-[#3A86FF]/30 backdrop-blur-sm">
+            <div className="md:w-1/5 order-2 md:order-1">
+                <div className="bg-gradient-to-r from-[#0B0F1A] to-[#0B0F1A]/80 rounded-xl p-8 shadow-lg border border-[#3A86FF]/30 backdrop-blur-sm">
                 <h4 className="text-2xl font-bold text-[#E63946] mb-6">¿En qué consiste?</h4>
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
@@ -394,22 +395,30 @@ const Game = () => {
                 </div>
               </div>
             </div>
-            <div className="md:w-1/2 flex justify-center order-1 md:order-2">
-              <img src={`${import.meta.env.BASE_URL}descripcion1.png`} alt="Gameplay Virtual Knockout" className="w-full max-w-lg h-auto rounded-2xl border border-blue-200 shadow-lg" />
+            <div className="md:w-4/5 flex justify-center order-1 md:order-2">
+              <img 
+                src={`${import.meta.env.BASE_URL}descripcion1.png`} 
+                alt="Gameplay Virtual Knockout" 
+                className="w-full h-96 object-cover rounded-2xl border-2 border-[#3A86FF]/50 shadow-2xl" 
+                loading="lazy"
+                decoding="async"
+              />
             </div>
           </div>
 
           {/* Fila 2: Objetivo (imagen izquierda, texto derecha) */}
           <div className="flex flex-col md:flex-row items-center gap-8">
-            <div className="md:w-1/2 flex justify-center mb-4 md:mb-0">
+            <div className="md:w-4/5 flex justify-center mb-4 md:mb-0">
               <img
                 src={`${import.meta.env.BASE_URL}objetivo1.png`}
                 alt="Objetivo Virtual Knockout"
-                className="w-full max-w-lg h-auto rounded-2xl border border-blue-200 shadow-lg"
+                className="w-full h-96 object-cover rounded-2xl border-2 border-[#E63946]/50 shadow-2xl"
+                loading="lazy"
+                decoding="async"
               />
             </div>
-            <div className="md:w-1/2">
-              <div className="bg-gradient-to-r from-[#0B0F1A] to-[#0B0F1A]/80 rounded-xl p-6 shadow-lg border border-[#3A86FF]/30 backdrop-blur-sm">
+            <div className="md:w-1/5">
+              <div className="bg-gradient-to-r from-[#0B0F1A] to-[#0B0F1A]/80 rounded-xl p-8 shadow-lg border border-[#3A86FF]/30 backdrop-blur-sm">
                 <h5 className="text-xl font-semibold text-[#E63946] mb-2">Objetivo</h5>
                 <p className="text-base text-white">Derrota a tu oponente usando combinaciones de golpes, movimientos defensivos y estrategia de combate. Tu misión es simple: <span className='font-bold text-[#FFD700]'>¡Knockearlo antes de que él te knockee a ti!</span></p>
               </div>
@@ -418,33 +427,47 @@ const Game = () => {
 
           {/* Fila 3: ¿Listo para la acción? (texto izquierda, imagen derecha) */}
           <div className="flex flex-col md:flex-row items-center gap-8">
-            <div className="md:w-1/2 order-2 md:order-1">
-              <p className="text-2xl text-white font-semibold mb-6">¿Listo para sudar, esquivar y golpear como un campeón?</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full mb-8">
-                <div className="bg-gradient-to-br from-[#050812] to-[#0A0F1A] rounded-xl shadow-lg p-6 flex flex-col items-center text-center border border-[#3A86FF]/30">
-                  <span className="text-4xl mb-2 text-[#3A86FF]">⚡</span>
-                  <span className="font-bold text-lg text-[#E63946]">Combate Rápido</span>
-                  <span className="text-white/80 text-sm mt-1">Esquiva, bloquea y contraataca en tiempo real contra tu oponente.</span>
+            <div className="md:w-1/5 order-2 md:order-1 px-4">
+              <p className="text-xl text-white font-semibold mb-8 leading-relaxed">¿Listo para sudar, esquivar y golpear como un campeón?</p>
+              <div className="flex flex-col gap-4 w-full mb-8">
+                <div className="bg-gradient-to-br from-[#050812] to-[#0A0F1A] rounded-lg shadow-lg p-4 flex items-center gap-3 border border-[#3A86FF]/30">
+                  <span className="text-2xl text-[#3A86FF]">⚡</span>
+                  <div className="flex-1">
+                    <span className="font-bold text-sm text-[#E63946] block">Combate Rápido</span>
+                    <span className="text-white/80 text-xs">Esquiva y contraataca en tiempo real.</span>
+                  </div>
                 </div>
-                <div className="bg-gradient-to-br from-[#050812] to-[#0A0F1A] rounded-xl shadow-lg p-6 flex flex-col items-center text-center border border-[#E63946]/30">
-                  <span className="text-4xl mb-2 text-[#E63946]">💥</span>
-                  <span className="font-bold text-lg text-[#E63946]">Knockout Épico</span>
-                  <span className="text-white/80 text-sm mt-1">Cada golpe cuenta. Busca la oportunidad perfecta para el KO final.</span>
+                <div className="bg-gradient-to-br from-[#050812] to-[#0A0F1A] rounded-lg shadow-lg p-4 flex items-center gap-3 border border-[#E63946]/30">
+                  <span className="text-2xl text-[#E63946]">💥</span>
+                  <div className="flex-1">
+                    <span className="font-bold text-sm text-[#E63946] block">Knockout Épico</span>
+                    <span className="text-white/80 text-xs">Busca la oportunidad perfecta para el KO.</span>
+                  </div>
                 </div>
-                <div className="bg-gradient-to-br from-[#050812] to-[#0A0F1A] rounded-xl shadow-lg p-6 flex flex-col items-center text-center border border-[#FF4D8B]/30">
-                  <span className="text-4xl mb-2 text-[#FF4D8B]">🥊</span>
-                  <span className="font-bold text-lg text-white">Técnicas de Boxeo</span>
-                  <span className="text-white/80 text-sm mt-1">Jabs, ganchos y uppercuts. Domina el arte del boxeo virtual.</span>
+                <div className="bg-gradient-to-br from-[#050812] to-[#0A0F1A] rounded-lg shadow-lg p-4 flex items-center gap-3 border border-[#FF4D8B]/30">
+                  <span className="text-2xl text-[#FF4D8B]">🥊</span>
+                  <div className="flex-1">
+                    <span className="font-bold text-sm text-white block">Técnicas de Boxeo</span>
+                    <span className="text-white/80 text-xs">Jabs, ganchos y uppercuts virtuales.</span>
+                  </div>
                 </div>
-                <div className="bg-gradient-to-br from-[#050812] to-[#0A0F1A] rounded-xl shadow-lg p-6 flex flex-col items-center text-center border border-[#FFD700]/30">
-                  <span className="text-4xl mb-2 text-[#FFD700]">🏆</span>
-                  <span className="font-bold text-lg text-[#FFD700]">Campeón Invicto</span>
-                  <span className="text-white/80 text-sm mt-1">Defiende tu récord y mantente como el último en pie del ring.</span>
+                <div className="bg-gradient-to-br from-[#050812] to-[#0A0F1A] rounded-lg shadow-lg p-4 flex items-center gap-3 border border-[#FFD700]/30">
+                  <span className="text-2xl text-[#FFD700]">🏆</span>
+                  <div className="flex-1">
+                    <span className="font-bold text-sm text-[#FFD700] block">Campeón Invicto</span>
+                    <span className="text-white/80 text-xs">Mantente como el último en pie.</span>
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="md:w-1/2 flex justify-center order-1 md:order-2">
-              <img src={`${import.meta.env.BASE_URL}cinturon.png`} alt="Acción Virtual Knockout" className="w-full max-w-lg h-auto rounded-2xl border border-blue-200 shadow-lg" />
+            <div className="md:w-4/5 flex justify-center order-1 md:order-2">
+              <img 
+                src={`${import.meta.env.BASE_URL}cinturon.png`} 
+                alt="Acción Virtual Knockout" 
+                className="w-full h-96 object-cover rounded-2xl border-2 border-[#FFD700]/50 shadow-2xl" 
+                loading="lazy"
+                decoding="async"
+              />
             </div>
           </div>
             </div>
@@ -475,7 +498,7 @@ const Game = () => {
             {/* Card de contenido (lado izquierdo) */}
             <div className="w-5/12 pr-8">
               <Card 
-                className="transition-all duration-500 hover:shadow-2xl hover:shadow-[#E63946]/30 border-2 border-[#3A86FF]/30 hover:border-[#E63946] bg-gradient-to-r from-[#0B0F1A] to-[#0B0F1A]/80 backdrop-blur-sm"
+                className="border-2 border-[#3A86FF]/30 bg-gradient-to-r from-[#0B0F1A] to-[#0B0F1A]/80 backdrop-blur-sm shadow-xl"
               >
                 <CardHeader>
                   <CardTitle className="text-xl font-bold text-white flex items-center gap-3">
@@ -541,6 +564,8 @@ const Game = () => {
                             src={`${import.meta.env.BASE_URL}${media.url.replace('/', '')}`}
                             alt={`${item.title} - Imagen ${mediaIndex + 1}`}
                             className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                            loading="lazy"
+                            decoding="async"
                             onError={(e) => {
                               e.currentTarget.style.display = 'none';
                               const nextSibling = e.currentTarget.nextElementSibling as HTMLElement;
@@ -935,6 +960,7 @@ const Game = () => {
         </div>
       )}
       
+      </div>
     </div>
   );
 };

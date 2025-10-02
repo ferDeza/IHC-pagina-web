@@ -11,6 +11,21 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     outDir: "docs", // 👈 output para GitHub Pages
+    // Optimizaciones de assets
+    assetsInlineLimit: 4096, // Inline assets menores a 4KB
+    rollupOptions: {
+      output: {
+        // Organizar assets por tipo
+        assetFileNames: (assetInfo) => {
+          const info = assetInfo.name!.split('.');
+          const ext = info[info.length - 1];
+          if (/\.(png|jpe?g|gif|svg|webp|ico)$/i.test(assetInfo.name!)) {
+            return `images/[name]-[hash][extname]`;
+          }
+          return `assets/[name]-[hash][extname]`;
+        },
+      },
+    },
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {
